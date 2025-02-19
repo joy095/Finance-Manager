@@ -1,0 +1,56 @@
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+    "username": "test",
+    "password": "123456",
+    "email": "test@gmail.com"
+}
+
+###
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+
+{
+    "password": "123456",
+    "email": "test@gmail.com"
+}
+
+###
+POST http://localhost:5000/api/auth/refresh-token
+Content-Type: application/json
+
+
+{
+    "refreshToken": "1a1922e52583ec9b059969990499c6779145e3bf787f2a7a76b17e2d4af9eac4cbbb4d8bb3786d9ed3b8aa11699a8dbd158c62fd429012955075385acdfcd1cf"
+}
+
+###
+POST http://localhost:5000/api/auth/logout
+Content-Type: application/json
+
+
+{
+    "refreshToken": "1a1922e52583ec9b059969990499c6779145e3bf787f2a7a76b17e2d4af9eac4cbbb4d8bb3786d9ed3b8aa11699a8dbd158c62fd429012955075385acdfcd1cf"
+}
+
+###
+POST http://localhost:5000/api/transaction/create
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2I1NWQxNjg5Zjg2Y2U0MGRmZDc3YTciLCJ1c2VybmFtZSI6InRlc3QiLCJpYXQiOjE3Mzk5NTI3MjMsImV4cCI6MTczOTk1NjMyM30.RnSItirf5UHYn7_IOuZpsPCAcJzzdNswGPNRIN2K150
+
+{
+    "description": "test desc",
+    "amount": 99459,
+    "type": "expense",
+    "category": "food",
+    "date": "2025-01-01",
+    "isRecurring": false,
+    "recurringFrequency": "monthly"
+}
+###
+GET http://localhost:5000/api/transaction/all
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2I1NWQxNjg5Zjg2Y2U0MGRmZDc3YTciLCJ1c2VybmFtZSI6InRlc3QiLCJpYXQiOjE3Mzk5NTI3MjMsImV4cCI6MTczOTk1NjMyM30.RnSItirf5UHYn7_IOuZpsPCAcJzzdNswGPNRIN2K150
+
