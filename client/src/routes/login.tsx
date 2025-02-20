@@ -103,7 +103,7 @@ const Login: React.FC = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 disabled:opacity-50"
+            className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-md disabled:opacity-50"
             disabled={isLoading}
           >
             {isLoading ? "Logging in..." : "Login"}
@@ -111,7 +111,7 @@ const Login: React.FC = () => {
           <div className="text-center">
             <button
               type="button"
-              className="text-indigo-600 hover:underline"
+              className="text-green-600 hover:underline"
               onClick={() => navigate("/register")}
             >
               Don't have an account? Register
