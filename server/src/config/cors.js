@@ -4,12 +4,13 @@ const whitelist = [
   "http://localhost:5173",
   "http://localhost:4173",
   "https://finance-manager-xxjq.vercel.app",
+  "https://finance-manager-kzz6.vercel.app",
 ];
 
 const corsOptions = {
   origin: function (origin, callback) {
-    // For development and testing - allow requests with no origin
-    if (!origin || whitelist.indexOf(origin) !== -1) {
+    // Check if origin is in whitelist or if it's a development request (no origin)
+    if (!origin || whitelist.includes(origin)) {
       callback(null, true);
     } else {
       callback(new Error(`Not allowed by CORS: ${origin}`));
@@ -17,19 +18,11 @@ const corsOptions = {
   },
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: [
-    "Content-Type",
-    "Authorization",
-    "x-refresh-token",
-    "Access-Control-Allow-Origin",
-    "Access-Control-Allow-Credentials",
-    "Access-Control-Allow-Methods",
-    "Access-Control-Allow-Headers",
-  ],
+  allowedHeaders: ["Content-Type", "Authorization", "x-refresh-token"],
   exposedHeaders: ["set-cookie", "Authorization"],
-  preflightContinue: false, // Changed to false to handle OPTIONS automatically
-  optionsSuccessStatus: 200, // Changed to 200 for better compatibility
-  maxAge: 86400, // Add cache for preflight requests (24 hours)
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+  maxAge: 86400,
 };
 
 module.exports = corsOptions;
