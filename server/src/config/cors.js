@@ -3,7 +3,7 @@
 const whitelist = [
   "http://localhost:5173",
   "http://localhost:4173",
-  "https://finance-manager-xxjq.vercel.app",
+  "https://finance-manager-xxjq.vercel.app/",
 ];
 
 const corsOptions = {
