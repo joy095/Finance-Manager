@@ -20,6 +20,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 async function waitForConnection(timeoutMs = 30000) {
+  // Same implementation as before
   return new Promise((resolve, reject) => {
     if (mongoose.connection.readyState === 1) {
       return resolve();
@@ -52,6 +53,7 @@ async function waitForConnection(timeoutMs = 30000) {
 }
 
 async function startServer() {
+  // Same implementation as before
   try {
     logger.info("Starting server initialization...");
 
@@ -131,6 +133,10 @@ async function startServer() {
       }),
     });
 
+    app.get("/health", (req, res) => {
+      res.send("OK");
+    });
+
     // Apply rate limiting to specific routes
     app.use("/api/auth/register", sensitiveEndpointsLimiter);
 
@@ -167,11 +173,13 @@ async function startServer() {
   }
 }
 
-// Start the server
-startServer().catch((error) => {
-  logger.error("Failed to start server:", error);
-  process.exit(1);
-});
+// Only start the server when this file is run directly (not imported)
+if (require.main === module) {
+  startServer().catch((error) => {
+    logger.error("Failed to start server:", error);
+    process.exit(1);
+  });
+}
 
 // Handle uncaught exceptions
 process.on("uncaughtException", (error) => {
@@ -190,3 +198,6 @@ process.on("unhandledRejection", (reason, promise) => {
   });
   process.exit(1);
 });
+
+// Export for testing
+module.exports = { app, startServer };

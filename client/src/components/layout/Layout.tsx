@@ -6,7 +6,7 @@ const Header = () => {
   return (
     <header>
       <nav className="bg-white shadow-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <Link to="/" className="flex items-center">
               <div className="flex-shrink-0 flex items-center">
@@ -52,7 +52,7 @@ const Header = () => {
 const Footer = () => {
   return (
     <footer className="bg-white">
-      <div className="max-w-7xl mx-auto py-12 px-4 overflow-hidden sm:px-6 lg:px-8">
+      <div className="container mx-auto py-12 px-4 overflow-hidden sm:px-6 lg:px-8">
         <nav
           className="-mx-5 -my-2 flex flex-wrap justify-center"
           aria-label="Footer"

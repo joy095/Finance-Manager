@@ -76,6 +76,7 @@ const Login: React.FC = () => {
               id="email"
               name="email"
               type="email"
+              data-test="email-input"
               value={formData.email}
               autoComplete="email"
               onChange={handleChange}
@@ -94,6 +95,7 @@ const Login: React.FC = () => {
               id="password"
               name="password"
               type="password"
+              data-test="password-input"
               autoComplete="current-password"
               value={formData.password}
               onChange={handleChange}
@@ -103,6 +105,7 @@ const Login: React.FC = () => {
           </div>
           <button
             type="submit"
+            data-test="login-button"
             className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-md disabled:opacity-50"
             disabled={isLoading}
           >
@@ -111,6 +114,7 @@ const Login: React.FC = () => {
           <div className="text-center">
             <button
               type="button"
+              data-test="register-link"
               className="text-green-600 hover:underline"
               onClick={() => navigate("/register")}
             >

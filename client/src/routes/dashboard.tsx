@@ -1,6 +1,6 @@
 /** @format */
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useGetTransactionsQuery, useLogoutMutation } from "../services/api";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -14,6 +14,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { TransactionSection } from "../components/TransactionSection";
+import { BudgetSection } from "../components/BudgetSection";
 
 interface Transaction {
   _id: string;
@@ -148,6 +149,18 @@ export default function Dashboard() {
     },
     {}
   );
+
+  const sortTransactionsByDate = (transactions: Transaction[]) => {
+    return [...transactions].sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
+  };
+
+  // Inside Dashboard component, add this just before the return statement
+  const recentTransactions = useMemo(() => {
+    const sortedTransactions = sortTransactionsByDate(transactionsArray);
+    return sortedTransactions.slice(0, 10); // Get 10 most recent transactions
+  }, [transactionsArray]);
 
   return (
     <div className="p-6 space-y-6">
@@ -353,7 +366,10 @@ export default function Dashboard() {
 
       {/* Recent Transactions Section */}
       <div className="bg-white rounded-lg shadow p-6">
-        <h3 className="text-lg font-semibold mb-4">Recent Transactions</h3>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-semibold">Recent Transactions</h3>
+          <span className="text-sm text-gray-500">Last 10 transactions</span>
+        </div>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
@@ -391,55 +407,60 @@ export default function Dashboard() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {(Array.isArray(transactions) ? transactions : [])
-                .sort(
-                  (a, b) =>
-                    new Date(b.date).getTime() - new Date(a.date).getTime()
-                )
-                .slice(0, 5)
-                .map((transaction) => (
-                  <tr key={transaction._id}>
-                    {transaction}
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {new Date(transaction.date).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {transaction.description}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {transaction.category}
-                    </td>
-                    <td
-                      className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${
+              {recentTransactions.map((transaction) => (
+                <tr key={transaction._id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {new Date(transaction.date).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {transaction.description}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {transaction.category}
+                  </td>
+                  <td
+                    className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${
+                      transaction.type === "income"
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }`}
+                  >
+                    ₹{transaction.amount.toFixed(2)}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    <span
+                      className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
                         transaction.type === "income"
-                          ? "text-green-600"
-                          : "text-red-600"
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
                       }`}
                     >
-                      ${transaction.amount.toFixed(2)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <span
-                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          transaction.type === "income"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-red-100 text-red-800"
-                        }`}
-                      >
-                        {transaction.type}
+                      {transaction.type}
+                    </span>
+                    {transaction.isRecurring && (
+                      <span className="ml-2 px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                        recurring
                       </span>
-                      {transaction.isRecurring && (
-                        <span className="ml-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                          recurring
-                        </span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
+                    )}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
+        {recentTransactions.length === 0 && (
+          <div className="text-center py-4 text-gray-500">
+            No transactions found
+          </div>
+        )}
       </div>
+
+      {/* Budget Section */}
+      <BudgetSection />
 
       <TransactionSection />
     </div>
