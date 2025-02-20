@@ -92,41 +92,9 @@ async function startServer() {
     logger.info("Setting up middleware...");
 
     app.use(helmet());
-    app.use((req, res, next) => {
-      res.header("Access-Control-Allow-Origin", req.headers.origin);
-      res.header("Access-Control-Allow-Credentials", true);
-      res.header(
-        "Access-Control-Allow-Methods",
-        "GET,PUT,POST,DELETE,UPDATE,OPTIONS"
-      );
-      res.header(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept, Authorization, x-refresh-token"
-      );
 
-      // Handle preflight
-      if (req.method === "OPTIONS") {
-        return res.status(200).json({
-          status: "ok",
-        });
-      }
-
-      next();
-    });
-
-    // Apply CORS configuration
     app.use(cors(corsOptions));
 
-    // Error handling middleware
-    app.use((err, req, res, next) => {
-      if (err.message.includes("Not allowed by CORS")) {
-        return res.status(403).json({
-          error: "CORS Error",
-          message: err.message,
-        });
-      }
-      next(err);
-    });
     app.use(express.json());
 
     // Rate limiter middleware
