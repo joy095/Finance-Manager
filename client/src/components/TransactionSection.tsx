@@ -29,7 +29,8 @@ interface Transaction {
 }
 
 export const TransactionSection = () => {
-  const [createTransaction] = useCreateTransactionMutation();
+  const [createTransaction, { isLoading: isCreating }] =
+    useCreateTransactionMutation();
   const { data: transactions = [] } = useGetTransactionsQuery({}) as {
     data: Transaction[];
   };
@@ -205,9 +206,10 @@ export const TransactionSection = () => {
 
         <button
           type="submit"
+          disabled={isCreating}
           className="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-md transition-colors"
         >
-          Add Transaction
+          {isCreating ? "Adding Transaction..." : "Add Transaction"}
         </button>
       </form>
 

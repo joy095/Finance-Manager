@@ -40,6 +40,9 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [logout] = useLogoutMutation();
   const [isClient, setIsClient] = useState(false);
+  const [incomeChartData, setIncomeChartData] = useState<
+    Array<{ date: string; amount: number }>
+  >([]);
 
   const refreshToken = useSelector(
     (state: RootState) => state.auth.refreshToken
@@ -61,6 +64,23 @@ export default function Dashboard() {
     setIsClient(true);
   }, []);
 
+  useEffect(() => {
+    if (Array.isArray(transactions?.data) && transactions.data.length > 0) {
+      const incomeData = transactions.data
+        .filter((transaction: Transaction) => transaction.type === "income")
+        .map((transaction: Transaction) => ({
+          date: transaction.date,
+          amount: transaction.amount,
+        }))
+        .sort(
+          (a: { date: string }, b: { date: string }) =>
+            new Date(a.date).getTime() - new Date(b.date).getTime()
+        );
+
+      setIncomeChartData(incomeData);
+    }
+  }, [transactions]);
+
   const handleLogout = async () => {
     try {
       if (refreshToken) {
@@ -68,8 +88,6 @@ export default function Dashboard() {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         navigate("/login", { replace: true });
-      } else {
-        console.error("Logout failed: No refresh token available");
       }
     } catch (error) {
       console.error("Logout failed:", error);
@@ -82,7 +100,6 @@ export default function Dashboard() {
     return <DashboardSkeleton />;
   }
 
-  // First, access the actual transactions array from the response
   const transactionsArray = transactions?.data || [];
 
   const spendingTrends = transactionsArray.reduce(
@@ -103,13 +120,9 @@ export default function Dashboard() {
       amount,
     }));
 
-  console.log("transactions", transactions);
-
   const totalExpenses = transactionsArray
     .filter((t: Transaction) => t.type === "expense")
     .reduce((sum: number, t: Transaction) => sum + t.amount, 0);
-
-  console.log("totalExpenses", totalExpenses);
 
   const totalIncome = transactionsArray
     .filter((t: Transaction) => t.type === "income")
@@ -117,24 +130,20 @@ export default function Dashboard() {
 
   const netBalance = totalIncome - totalExpenses;
 
-  // Group transactions by category for visualization
   const categoryTotals = transactionsArray.reduce(
     (
       acc: Record<string, { income: number; expense: number }>,
       transaction: Transaction
     ) => {
       const category = transaction.category || "Uncategorized";
-
       if (!acc[category]) {
         acc[category] = { income: 0, expense: 0 };
       }
-
       if (transaction.type === "income") {
         acc[category].income += transaction.amount;
       } else {
         acc[category].expense += transaction.amount;
       }
-
       return acc;
     },
     {}
@@ -170,7 +179,7 @@ export default function Dashboard() {
           color="text-blue-600"
         />
       </div>
-
+      {/* Spending Trends Section */}
       <div className="bg-white rounded-lg shadow p-6">
         <h3 className="text-lg font-semibold mb-4">Spending Trends</h3>
         {isClient && chartData.length > 0 ? (
@@ -216,6 +225,57 @@ export default function Dashboard() {
           <div className="flex justify-center items-center h-64 text-gray-500">
             {chartData.length === 0
               ? "No expense data available"
+              : "Loading chart..."}
+          </div>
+        )}
+      </div>
+
+      {/* Income Trends Chart */}
+      <div className="bg-white rounded-lg shadow p-6 mt-6">
+        <h3 className="text-lg font-semibold mb-4">Income Trends</h3>
+        {isClient && incomeChartData.length > 0 ? (
+          <div className="h-64 md:h-80">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={incomeChartData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="date"
+                  tickFormatter={(date) =>
+                    new Date(date).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                    })
+                  }
+                />
+                <YAxis tickFormatter={(value) => `₹${value}`} />
+                <Tooltip
+                  formatter={(value) => [
+                    `₹${Number(value).toFixed(2)}`,
+                    "Amount",
+                  ]}
+                  labelFormatter={(label) =>
+                    new Date(label).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })
+                  }
+                />
+                <Line
+                  type="monotone"
+                  dataKey="amount"
+                  stroke="#16a34a"
+                  strokeWidth={2}
+                  dot={{ r: 4 }}
+                  activeDot={{ r: 6 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        ) : (
+          <div className="flex justify-center items-center h-64 text-gray-500">
+            {incomeChartData.length === 0
+              ? "No income data available"
               : "Loading chart..."}
           </div>
         )}
