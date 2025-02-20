@@ -1,6 +1,9 @@
 /** @format */
 
-const whitelist = ["http://localhost:5173", "http://appdomain.com"];
+const whitelist = [
+  "http://localhost:5173",
+  "https://finance-manager-xxjq.vercel.app",
+];
 
 const corsOptions = {
   origin: function (origin, callback) {
