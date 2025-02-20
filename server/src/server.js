@@ -4,7 +4,6 @@ require("dotenv").config();
 const logger = require("./utils/logger");
 const express = require("express");
 const helmet = require("helmet");
-const cors = require("cors");
 const { RateLimiterMongo } = require("rate-limiter-flexible");
 const { rateLimit } = require("express-rate-limit");
 const MongoStore = require("rate-limit-mongo");
@@ -13,13 +12,35 @@ const transactionRoutes = require("./routes/transactionRoute");
 const budgetRoutes = require("./routes/budgetRoute");
 const errorHandler = require("./middleware/errorHandler");
 const dbConn = require("./config/dbConn");
-const corsOptions = require("./config/cors");
 const mongoose = require("mongoose");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+app.use((req, res, next) => {
+  const allowedOrigins = [
+    "https://finance-manager-tn2u.vercel.app",
+    "http://localhost:5173",
+  ];
+
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
+
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization, x-refresh-token"
+  );
+  res.header("Access-Control-Allow-Credentials", "true");
+
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
+  next();
+});
 
 async function waitForConnection(timeoutMs = 30000) {
   // Same implementation as before
