@@ -134,7 +134,7 @@ async function startServer() {
       }),
     });
 
-    app.get("/health", (req, res) => {
+    app.get("/", (req, res) => {
       res.send("OK");
     });
 
