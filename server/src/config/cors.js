@@ -8,6 +8,7 @@ const corsOptions = {
     "Content-Type",
     "Authorization",
     "x-refresh-token",
+    "Access-Control-Allow-Origin",
   ],
 };
 
