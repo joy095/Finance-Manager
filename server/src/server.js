@@ -92,27 +92,7 @@ async function startServer() {
     logger.info("Setting up middleware...");
 
     app.use(helmet());
-
-    // CORS pre-flight handling
-    app.options("*", cors(corsOptions));
-
-    // Apply CORS for all routes
     app.use(cors(corsOptions));
-
-    // Add headers middleware
-    app.use((req, res, next) => {
-      const origin = req.headers.origin;
-      if (origin && corsOptions.origin(origin, (err, allowed) => allowed)) {
-        res.setHeader("Access-Control-Allow-Origin", origin);
-      }
-      res.setHeader("Access-Control-Allow-Credentials", "true");
-      res.setHeader(
-        "Access-Control-Allow-Methods",
-        "GET,HEAD,PUT,PATCH,POST,DELETE"
-      );
-      next();
-    });
-
     app.use(express.json());
 
     // Rate limiter middleware
