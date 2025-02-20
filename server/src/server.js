@@ -19,6 +19,8 @@ const mongoose = require("mongoose");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+app.use(cors(corsOptions));
+
 async function waitForConnection(timeoutMs = 30000) {
   // Same implementation as before
   return new Promise((resolve, reject) => {
@@ -92,7 +94,6 @@ async function startServer() {
     logger.info("Setting up middleware...");
 
     app.use(helmet());
-    app.use(cors(corsOptions));
     app.use(express.json());
 
     // Rate limiter middleware
