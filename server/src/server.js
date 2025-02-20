@@ -92,7 +92,8 @@ async function startServer() {
     logger.info("Setting up middleware...");
 
     app.use(helmet());
-    app.use(cors(corsOptions));
+    // app.use(cors(corsOptions));
+    app.use(cors());
     app.use(express.json());
 
     // Rate limiter middleware
