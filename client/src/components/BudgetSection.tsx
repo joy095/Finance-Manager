@@ -171,69 +171,6 @@ export const BudgetSection = () => {
     }
   };
 
-  const calculateSpendingPercentage = (budget: Budget) => {
-    const spending = budget.currentSpending ?? 0;
-    return (spending / budget.amount) * 100;
-  };
-
-  const renderBudgetCard = (budget: Budget) => {
-    const spendingPercentage = calculateSpendingPercentage(budget);
-    const isNearLimit = spendingPercentage >= budget.alertThreshold;
-
-    return (
-      <div
-        key={budget._id}
-        className={`p-4 rounded-lg border ${
-          isNearLimit ? "border-red-500 bg-red-50" : "border-gray-200"
-        }`}
-      >
-        <div className="flex justify-between items-start">
-          <div>
-            <h3 className="font-medium">{budget.category}</h3>
-            <p className="text-sm text-gray-600">{budget.period} budget</p>
-          </div>
-          <div className="flex space-x-2">
-            <button
-              onClick={() => {
-                setSelectedBudget(budget);
-                setSpendingAmount(budget.currentSpending ?? 0);
-                setIsEditModalOpen(true);
-              }}
-              className="text-blue-600 hover:text-blue-800"
-            >
-              Edit Spending
-            </button>
-            <button
-              onClick={() => handleDelete(budget._id)}
-              className="text-red-600 hover:text-red-800"
-            >
-              Delete
-            </button>
-          </div>
-        </div>
-
-        <div className="mt-4">
-          <div className="flex justify-between text-sm">
-            <span>Spent: ₹{(budget.currentSpending ?? 0).toFixed(2)}</span>
-            <span>Budget: ₹{budget.amount.toFixed(2)}</span>
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
-            <div
-              className={`h-2.5 rounded-full ${
-                isNearLimit ? "bg-red-600" : "bg-green-600"
-              }`}
-              style={{ width: `${Math.min(spendingPercentage, 100)}%` }}
-            ></div>
-          </div>
-          {isNearLimit && (
-            <p className="text-red-600 text-sm mt-2">
-              Alert: Budget alert threshold reached!
-            </p>
-          )}
-        </div>
-      </div>
-    );
-  };
   return (
     <div className="bg-white rounded-lg shadow p-6 mt-6">
       <div className="flex justify-between items-center mb-4">
