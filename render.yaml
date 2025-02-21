@@ -1,0 +1,48 @@
+# @format
+
+services:
+  # Frontend Web Service
+  - type: web
+    name: finance-manager-client
+    env: static
+    buildCommand: cd client && npm install && npm build
+    staticPublishPath: ./client/dist
+    domains:
+      - finance-manager-client.onrender.com
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          name: finance-manager-api
+          type: web
+          property: url
+
+  # Backend API Service
+  - type: web
+    name: finance-manager-api
+    env: node
+    region: frankfurt
+    buildCommand: cd server && npm install
+    startCommand: cd server && node src/server.js
+    domains:
+      - finance-manager-api.onrender.com
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: REFRESH_TOKEN_SECRET
+        sync: false
+      - key: CLIENT_URL
+        value: https://finance-manager-client.onrender.com
+    autoDeploy: true
+    healthCheckPath: /api/health
+
+databases:
+  - name: finance-manager-db
+    databaseName: expenses
+    user: finance-manager
+    plan: free

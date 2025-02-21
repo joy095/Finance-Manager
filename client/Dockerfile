@@ -2,12 +2,10 @@ FROM node:18-alpine as build
 
 WORKDIR /app/client
 
-RUN npm install -g pnpm
-
 COPY package.json ./
 
 # Install dependencies without frozen-lockfile first time
-RUN pnpm install --no-frozen-lockfile
+RUN npm install --no-frozen-lockfile
 
 COPY . .
 
@@ -17,8 +15,6 @@ RUN pnpm build
 FROM node:18-alpine
 
 WORKDIR /app/client
-
-RUN npm install -g pnpm
 
 COPY package.json ./
 COPY --from=build /app/client/node_modules ./node_modules
