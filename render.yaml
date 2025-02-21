@@ -23,8 +23,6 @@ services:
     region: frankfurt
     buildCommand: cd server && npm install
     startCommand: cd server && node src/server.js
-    domains:
-      - finance-manager-api.onrender.com
     envVars:
       - key: NODE_ENV
         value: production
@@ -36,8 +34,6 @@ services:
         sync: false
       - key: REFRESH_TOKEN_SECRET
         sync: false
-      - key: CLIENT_URL
-        value: https://finance-manager-client.onrender.com
     autoDeploy: true
     healthCheckPath: /api/health
 
