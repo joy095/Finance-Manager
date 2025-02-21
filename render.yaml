@@ -7,8 +7,6 @@ services:
     env: static
     buildCommand: cd client && npm install && npm build
     staticPublishPath: ./client/dist
-    domains:
-      - finance-manager-client.onrender.com
     envVars:
       - key: VITE_API_URL
         fromService:
