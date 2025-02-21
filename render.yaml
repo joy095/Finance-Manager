@@ -41,8 +41,3 @@ services:
     autoDeploy: true
     healthCheckPath: /api/health
 
-databases:
-  - name: finance-manager-db
-    databaseName: expenses
-    user: finance-manager
-    plan: free
